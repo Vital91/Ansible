@@ -1,0 +1,22 @@
+- hosts: all
+  collections:
+    - arubanetworks.aoscx
+  vars:
+    ansible_connection: arubanetworks.aoscx.aoscx
+    Vlan_tel:
+      name: VLAN_TEL
+      description: This is VLAN 400 for telephony
+      id: '400'
+  gather_facts: False    
+  tasks:
+    - name: Create VLAN 400 with description and name
+      aoscx_vlan:
+        vlan_id: "{{Vlan_tel.id}}"
+        name: "{{Vlan_tel.name}}"
+        description: "{{Vlan_tel.description}}"
+    - name: Configur interface and set vlan_id
+      aoscx_l2_interface:
+        interface: 1/1/2
+        vlan_mode: trunk
+        vlan_trunks: "{{Vlan_tel.id}}"
+        native_vlan_id: "{{Vlan_tel.id}}"
